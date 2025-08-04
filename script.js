@@ -8,7 +8,7 @@ function prettifyFilename(file) {
 const dishes = imageFiles.map((file, index) => ({
     id: index + 1,
     name: prettifyFilename(file),
-    image: `images/${file}`
+    image: `images/optimized/${file}`
 }));
 
 let likedDishes = [];
@@ -29,6 +29,7 @@ function loadDish(index) {
     if (index < dishes.length) {
         dishName.textContent = dishes[index].name;
         card.style.backgroundImage = `url('${dishes[index].image}')`;
+        preloadImages(index + 1, 3);
     } else {
         dishName.textContent = "No more dishes!";
         card.style.backgroundImage = 'none';
@@ -38,6 +39,14 @@ function loadDish(index) {
 let isDragging = false;
 let startX = 0;
 let currentX = 0;
+
+// Preload helper: quietly start downloading upcoming images so they are in cache
+function preloadImages(startIndex, count) {
+    for (let i = startIndex; i < startIndex + count && i < dishes.length; i++) {
+        const img = new Image();
+        img.src = dishes[i].image;
+    }
+}
 
 function getPointerX(evt) {
     if (evt.touches && evt.touches.length) {
