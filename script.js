@@ -101,6 +101,8 @@ function sortDishes() {
 
 // Event Listeners
 card.addEventListener('mousedown', handleSwipe);
+card.addEventListener('touchstart', handleSwipe);
+
 stopBtn.addEventListener('click', stopSwiping);
 resetBtn.addEventListener('click', resetApp);
 sortBtn.addEventListener('click', sortDishes);
