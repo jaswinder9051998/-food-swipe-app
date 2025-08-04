@@ -96,9 +96,11 @@ function stopSwiping() {
     resultsContainer.classList.remove('hidden');
     likedDishesContainer.innerHTML = '';
     likedDishes.forEach(dish => {
-        const dishElement = document.createElement('div');
-        dishElement.textContent = dish.name;
-        likedDishesContainer.appendChild(dishElement);
+        const img = document.createElement('img');
+        img.src = dish.image;
+        img.alt = dish.name;
+        img.className = 'liked-image';
+        likedDishesContainer.appendChild(img);
     });
 }
 
