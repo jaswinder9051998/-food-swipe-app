@@ -28,11 +28,26 @@ const likedDishesContainer = document.getElementById('liked-dishes');
 function loadDish(index) {
     if (index < dishes.length) {
         dishName.textContent = dishes[index].name;
+        
+        // Reset card position and fade in new image
+        card.style.transition = 'none';
+        card.style.transform = 'translateX(0) rotate(0deg)';
+        card.style.opacity = '0';
+        
+        // Load new image
         card.style.backgroundImage = `url('${dishes[index].image}')`;
+        
+        // Fade in with slight delay
+        setTimeout(() => {
+            card.style.transition = 'opacity 0.2s ease';
+            card.style.opacity = '1';
+        }, 50);
+        
         preloadImages(index + 1, 3);
     } else {
         dishName.textContent = "No more dishes!";
         card.style.backgroundImage = 'none';
+        card.style.opacity = '1';
     }
 }
 
@@ -91,15 +106,21 @@ function dragEnd() {
     card.style.transition = 'transform 0.3s ease'; // Re-enable transition
 
     if (currentX > 100) { // Swiped right
+        // Animate card flying off to the right
+        card.style.transform = 'translateX(100vw) rotate(30deg)';
         likedDishes.push(dishes[currentDishIndex]);
         currentDishIndex++;
-        loadDish(currentDishIndex);
+        setTimeout(() => loadDish(currentDishIndex), 300);
     } else if (currentX < -100) { // Swiped left
+        // Animate card flying off to the left
+        card.style.transform = 'translateX(-100vw) rotate(-30deg)';
         currentDishIndex++;
-        loadDish(currentDishIndex);
+        setTimeout(() => loadDish(currentDishIndex), 300);
+    } else {
+        // Snap back to center
+        card.style.transform = 'translateX(0) rotate(0deg)';
     }
     
-    card.style.transform = 'translateX(0) rotate(0deg)';
     currentX = 0;
 }
 
