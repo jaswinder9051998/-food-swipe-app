@@ -36,19 +36,36 @@ let isDragging = false;
 let startX = 0;
 let currentX = 0;
 
+function getPointerX(evt) {
+    if (evt.touches && evt.touches.length) {
+        return evt.touches[0].clientX;
+    }
+    if (evt.changedTouches && evt.changedTouches.length) {
+        return evt.changedTouches[0].clientX;
+    }
+    return evt.clientX;
+}
+
 function handleSwipe(event) {
     isDragging = true;
-    startX = event.pageX || event.touches[0].pageX;
+    startX = getPointerX(event);
+    // Prevent scrolling while swiping on touch devices
+    if (event.type === 'touchstart') {
+        event.preventDefault();
+    }
     card.style.transition = 'none'; // Disable transition during drag
     document.addEventListener('mousemove', drag);
     document.addEventListener('mouseup', dragEnd);
-    document.addEventListener('touchmove', drag);
+    document.addEventListener('touchmove', drag, { passive: false });
     document.addEventListener('touchend', dragEnd);
 }
 
 function drag(event) {
     if (!isDragging) return;
-    currentX = (event.pageX || event.touches[0].pageX) - startX;
+    currentX = getPointerX(event) - startX;
+    if (event.type === 'touchmove') {
+        event.preventDefault();
+    }
     card.style.transform = `translateX(${currentX}px) rotate(${currentX / 10}deg)`;
 }
 
@@ -101,7 +118,7 @@ function sortDishes() {
 
 // Event Listeners
 card.addEventListener('mousedown', handleSwipe);
-card.addEventListener('touchstart', handleSwipe);
+card.addEventListener('touchstart', handleSwipe, { passive: false });
 
 stopBtn.addEventListener('click', stopSwiping);
 resetBtn.addEventListener('click', resetApp);
